@@ -94,16 +94,18 @@ class InstagramScraper:
             print(f"Story element not found!: {e}")
             raise
 
-    def iterate_stories(self):
+    def iterate_stories(self, counter = 0):
         """
         Starts iterating stories until it returns to homepage
         """
+        if counter == 5:
+            return
         try:
             if self.__pause_current_story():
                 sleep(2)
                 self.__save_story()
                 self.__go_to_next_story()
-                self.iterate_stories()
+                self.iterate_stories(counter=counter + 1)
             else:
                 return
         except Exception as e:
