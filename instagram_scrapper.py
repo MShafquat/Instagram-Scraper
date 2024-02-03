@@ -133,7 +133,7 @@ class InstagramScraper:
             author_xpath = './/div[2]/div[1]/div/div[2]/div/div[1]/a'
             author_element = header_element.find_element(By.TAG_NAME, 'a')
             author_url = author_element.get_attribute('href')
-            author_username = author_element.text
+            author_username = author_element.get_attribute('text')
             time_element = header_element.find_element(By.TAG_NAME, 'time')
             datetime = time_element.get_attribute('datetime')
 
@@ -148,31 +148,11 @@ class InstagramScraper:
             print("Header information not found")
             raise
 
-        try:
-            image_xpath = './/../div[1]/div/img'
-            image_element = header_element.find_element(By.XPATH, image_xpath)
-            print(f"::: {image_element}")
-            image_png = image_element.screenshot_as_base64()
-            print(image_png)
-            result['image'] = image_png
-            self.results.append(result)
-            return
-        except NoSuchElementException as e:
-            print("Image element not found")
-            print(e)
-        except Exception as e:
-            # other exception
-            print(e)
-        try:
-            video_xpath = './/../div[1]/div/div/div/div/div/div/video'
-            video_element = header_element.find_element(By.XPATH, video_xpath)
-            result['video'] = video_element.screenshot_as_base64()
-            self.results.append(result)
-            return
-        except Exception as e:
-            print(e)
-            print("Video or image element not found")
-            raise
+        div_img = header_element.parent.find_element(By.TAG_NAME, 'div')
+        print(div_img.get_attribute('innerHTML'))
+        image_png = div_img.screenshot_as_base64
+        result['image'] = image_png
+        self.results.append(result)
 
     def __go_to_next_story(self):
         """
@@ -187,6 +167,8 @@ class InstagramScraper:
             raise
 
     def close(self):
+        with open('file.json', 'w') as f:
+            json.dump(self.results, f, indent=4)
         self.driver.close()
 
 if __name__ == '__main__':
