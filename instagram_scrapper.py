@@ -130,10 +130,9 @@ class InstagramScraper:
         try:
             story_url = self.driver.current_url
             header_element = self.driver.find_element(By.CSS_SELECTOR, 'div header')
-            author_xpath = './/div[2]/div[1]/div/div[2]/div/div[1]/a'
-            author_element = header_element.find_element(By.TAG_NAME, 'a')
+            author_element = header_element.find_elements(By.TAG_NAME, 'a')[1]
             author_url = author_element.get_attribute('href')
-            author_username = author_element.get_attribute('text')
+            author_username = author_element.text
             time_element = header_element.find_element(By.TAG_NAME, 'time')
             datetime = time_element.get_attribute('datetime')
 
@@ -143,13 +142,11 @@ class InstagramScraper:
                 'author_username': author_username,
                 'datetime': datetime
             }
-            print(result)
         except Exception as e:
             print("Header information not found")
             raise
 
         div_img = header_element.parent.find_element(By.TAG_NAME, 'div')
-        print(div_img.get_attribute('innerHTML'))
         image_png = div_img.screenshot_as_base64
         result['image'] = image_png
         self.results.append(result)
