@@ -143,12 +143,15 @@ class InstagramScraper:
                 'author_username': author_username,
                 'datetime': datetime
             }
+            print(result)
         except Exception as e:
             print("Header information not found")
             raise
 
         try:
-            image_element = header_element.parent.find_element(By.TAG_NAME, 'img')
+            image_xpath = './/../div[1]/div/img'
+            image_element = header_element.find_element(By.XPATH, image_xpath)
+            print(f"::: {image_element}")
             image_png = image_element.screenshot_as_base64()
             print(image_png)
             result['image'] = image_png
@@ -160,9 +163,9 @@ class InstagramScraper:
         except Exception as e:
             # other exception
             print(e)
-            raise
         try:
-            video_element = header_element.parent.find_element(By.TAG_NAME, 'video')
+            video_xpath = './/../div[1]/div/div/div/div/div/div/video'
+            video_element = header_element.find_element(By.XPATH, video_xpath)
             result['video'] = video_element.screenshot_as_base64()
             self.results.append(result)
             return
