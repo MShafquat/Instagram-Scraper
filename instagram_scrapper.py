@@ -148,10 +148,13 @@ class InstagramScraper:
             print("Header information not found")
             raise
 
-        div_img = header_element.parent.find_element(By.TAG_NAME, 'div')
-        image_png = div_img.screenshot_as_base64
-        result['image'] = image_png
-        self.results.append(result)
+        try:
+            div_img = header_element.parent.find_element(By.TAG_NAME, 'img')
+            image_url = f"data:image/png;base64,{div_img.screenshot_as_base64}"
+            result['image'] = image_url
+            self.results.append(result)
+        except Exception as e:
+            print(e)
 
     def __go_to_next_story(self):
         """
